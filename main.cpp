@@ -35,6 +35,12 @@ class card{
         else if(suit == "S" || suit == "C"){ return 3; }
         else return 0; //Error
     }
+
+    void reset_card(){
+        rank = 0;
+        suit = "null";
+    }
+
 };
 
 class deck{
@@ -63,7 +69,7 @@ class deck{
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         auto rng = std::default_random_engine(seed);
-        std::cout << rng() % 10 + 1 << std::endl;
+        //std::cout << rng() % 10 + 1 << std::endl;
         std::shuffle(std::begin(unshuffled_deck), std::end(unshuffled_deck), rng);
 
         while(!unshuffled_deck.empty()){
@@ -81,8 +87,8 @@ class deck{
 
             if(!match){ 
                 shuffled_deck.push_front(temp);
-            std::cout << "[" << temp.get_rank() << '|' << temp.get_suit() << "] ";
-        }
+                //std::cout << "[" << temp.get_rank() << '|' << temp.get_suit() << "] ";
+            }
         }
     }
 
@@ -181,6 +187,9 @@ int play_card(card (&draw)[4], int index, bool healed){
                 std::cout << "You will fight this monster bare handed." << std::endl;
                 person.attack_bare_handed(rank);
                 return_code = 3;
+
+                if(person.get_health() > 0){ std::cout<< "Your current health is: " << person.get_health() << std::endl; }
+                else{ return_code = 5;}
                 break;
             }else{
                 std::string fighting_style = "x";
@@ -256,8 +265,10 @@ int main(){
             std::cout << "Printing current hand..." << std::endl;
 
             for(int i = 0; i < 4; i++){
-                hand[i] = draw_deck.front();
-                draw_deck.pop_front();
+                if(hand[i].get_type() == 0){
+                    hand[i] = draw_deck.front();
+                    draw_deck.pop_front();
+                }
                 std::cout << "[" << hand[i].get_rank() << '|' << hand[i].get_suit() << "] ";
             }
             std::cout << std::endl;
@@ -270,12 +281,18 @@ int main(){
                 if(choice > 0 || choice < 5){ break; }
                 else{ std::cout << "Type your answer again." << std::endl; }
             }
+
+            std::cout << "Out of while loop" << std::endl;
                 
             if(choice == 5){ //Run
                 has_run = true;
+                std::cout << "in if statement" << std::endl;
                 for(int i = 0; i < 4; i++){
-                    draw_deck.push_back(hand[i]);
-                    hand[i] = card();
+                    std::cout << "In for loop" << std::endl;
+                    card temp = hand[i];
+                    draw_deck.push_back(temp);
+                    std::cout << "pushed" << std::endl;
+                    hand[i].reset_card();
                 }
             }
             else{ //Picked a card
@@ -300,8 +317,8 @@ int main(){
                         while(true){
                             std::cout << "Pick another card other than " <<
                             "[" << hand[choice1].get_rank() << '|' << hand[choice1].get_suit() << "] "
-                            << "and" <<
-                            "[" << hand[choice1].get_rank() << '|' << hand[choice1].get_suit() << "] " 
+                            << "and " <<
+                            "[" << hand[choice2].get_rank() << '|' << hand[choice2].get_suit() << "] " 
                             << "(0, 1, 2, 3)" << std::endl;
                             std::cin >> choice3;
                             if((choice3 != choice1) && (choice3 != choice2) && (choice3 >= 0) && (choice3 <= 3)){
@@ -325,17 +342,22 @@ int main(){
                                     weapon_slot_deck.pop_front();
                                 }
                             }
+                            continue;
                         case 3: //3 = Fought bare handed
                             discard_deck.push_front(hand[choice]);
-                            hand[choice] = card();
+                            continue;
                         case 4: //4 = Fought with weapon
                             weapon_slot_deck.push_front(hand[choice]);
-                            hand[choice] = card();
+                            continue;
                         case 5: //5 = Died
                             alive = false;
                             break;
                     }
+                    if(!alive){ break; }
                 }
+                hand[choice1].reset_card();
+                hand[choice2].reset_card();
+                hand[choice3].reset_card();
             }
         }
 
