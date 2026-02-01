@@ -3,6 +3,7 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <chrono>
 #include <deque>
 
 class card{
@@ -60,14 +61,15 @@ class deck{
     void become_draw_deck(std::vector<card> exclude_cards){
         create_unshuffled_deck();
 
-        auto rng = std::default_random_engine{};
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        auto rng = std::default_random_engine(seed);
+        std::cout << rng() % 10 + 1 << std::endl;
         std::shuffle(std::begin(unshuffled_deck), std::end(unshuffled_deck), rng);
 
         while(!unshuffled_deck.empty()){
             bool match = false; //flag for a card matching something in the exclusion deck
             card temp = unshuffled_deck.back();
             unshuffled_deck.pop_back();
-            std::cout << "[" << temp.get_rank() << '|' << temp.get_suit() << "] ";
 
             for(card playing_card : exclude_cards){
                 //If the card that has been popped does not equal ANY of the exclusion cards:
@@ -77,7 +79,10 @@ class deck{
                 }else{ match = false; }
             }
 
-            if(!match){ shuffled_deck.push_front(temp); }
+            if(!match){ 
+                shuffled_deck.push_front(temp);
+            std::cout << "[" << temp.get_rank() << '|' << temp.get_suit() << "] ";
+        }
         }
     }
 
@@ -158,36 +163,42 @@ int play_card(card (&draw)[4], int index, bool healed){
 
     int return_code;
 
-    if(type == 1){ 
-        if(!healed){ 
-            person.heal(rank); 
-            std::cout << "You have healed " << rank << " points of health and are now at " << person.get_health() << " points of health." << std::endl;
-        }else{ std::cout << "You have already healed in this room, so this potion will go to waste." << std::endl; }
-        return_code = 1;
-    }else if(type == 2){ 
-        person.equip_weapon(rank);
-        std::cout << "Your new weapon deals " << person.get_weapon() << " damage." << std::endl; 
-        return_code = 2;
-    }else{ //Has to be type monster (3)
-        if(person.get_weapon() == 0){
-            std::cout << "You will fight this monster bare handed." << std::endl;
-            person.attack_bare_handed(rank);
-            return_code = 3;
-        }else{
-            std::string fighting_style = "x";
-            while(fighting_style != "B" || fighting_style != "W"){
-                std::cout << "Would you like to fight this monster bare handed(B) or with your weapon(W)?: ";
-                std::cin >> fighting_style; 
-            }
-            if(fighting_style == "B"){ person.attack_bare_handed(rank); }
-            else if(fighting_style == "W"){ person.attack_weapon(rank); }
-            return_code = 4;
-        }
-        std::cout << "Monster slain." << std::endl;
-        if(person.get_health() > 0){ std::cout<< "Your current health is: " << person.get_health(); }
-        else{ return_code = 5;}
-    }
+    switch(type){
+        case 1:
+            if(!healed){ 
+                person.heal(rank); 
+                std::cout << "You have healed " << rank << " points of health and are now at " << person.get_health() << " points of health." << std::endl;
+            }else{ std::cout << "You have already healed in this room, so this potion will go to waste." << std::endl; }
+            return_code = 1;
+            break;
+        case 2:
+            person.equip_weapon(rank);
+            std::cout << "Your new weapon deals " << person.get_weapon() << " damage." << std::endl; 
+            return_code = 2;
+            break;
+        case 3:
+            if(person.get_weapon() == 0){
+                std::cout << "You will fight this monster bare handed." << std::endl;
+                person.attack_bare_handed(rank);
+                return_code = 3;
+                break;
+            }else{
+                std::string fighting_style = "x";
+                while(!(fighting_style == "B" || fighting_style == "W")){
+                    std::cout << "Would you like to fight this monster bare handed(B) or with your weapon(W)?: ";
+                    std::cin >> fighting_style; 
+                }
+                if(fighting_style == "B"){ person.attack_bare_handed(rank); }
+                else if(fighting_style == "W"){ person.attack_weapon(rank); }
+                return_code = 4;
 
+                std::cout << "Monster slain." << std::endl;
+                if(person.get_health() > 0){ std::cout<< "Your current health is: " << person.get_health() << std::endl; }
+                else{ return_code = 5;}
+                break;
+            }
+
+    }
     return return_code;
 }
 
@@ -247,9 +258,6 @@ int main(){
             for(int i = 0; i < 4; i++){
                 hand[i] = draw_deck.front();
                 draw_deck.pop_front();
-            }
-
-            for(int i = 0; i < 4; i++){
                 std::cout << "[" << hand[i].get_rank() << '|' << hand[i].get_suit() << "] ";
             }
             std::cout << std::endl;
@@ -277,9 +285,6 @@ int main(){
                 int choice2 = choice;
                 int choice3 = choice;
                 for(int i = 0; i < 3; i++){
-
-std::cout << "[" << hand[i].get_rank() << '|' << hand[i].get_suit() << "] ";
-
                     if(i == 1){
                         while(true){
                             std::cout << "Pick another card other than " << 
