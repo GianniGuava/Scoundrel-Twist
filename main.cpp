@@ -153,7 +153,7 @@ class player{
 //Initialize Player as global
 player person;
 
-int play_card(card (&draw)[4], int index, bool healed){
+int play_card(card (&draw)[4], int index, bool healed, card weapon){
     //Only accepts 0-3 by this point
     int type = draw[index].get_type();
     int rank = draw[index].get_rank();
@@ -173,7 +173,8 @@ int play_card(card (&draw)[4], int index, bool healed){
         case 1:
             if(!healed){ 
                 person.heal(rank); 
-                std::cout << "You have healed " << rank << " points of health and are now at " << person.get_health() << " points of health." << std::endl;
+                std::cout << "You have healed " << rank << " points of health and are now at " 
+                << person.get_health() << " points of health." << std::endl;
             }else{ std::cout << "You have already healed in this room, so this potion will go to waste." << std::endl; }
             return_code = 1;
             break;
@@ -192,15 +193,27 @@ int play_card(card (&draw)[4], int index, bool healed){
                 else{ return_code = 5;}
                 break;
             }else{
-                std::string fighting_style = "x";
-                while(!(fighting_style == "B" || fighting_style == "W")){
-                    std::cout << "Would you like to fight this monster bare handed(B) or with your weapon(W)?: ";
-                    std::cin >> fighting_style; 
+                if(weapon.get_type() == 3 && 
+                   weapon.get_rank() <= draw[index].get_rank()){
+                    std::cout << "Your weapon is too degraded, you will be forced to fight barehanded" << std::endl;
+                    person.attack_bare_handed(rank);
+                    return_code = 3;
+                }else{
+                    std::string fighting_style = "x";
+                    while(!(fighting_style == "B" || fighting_style == "W")){
+                        std::cout << "Would you like to fight this monster bare handed(B) or with your weapon(W)?: ";
+                        std::cin >> fighting_style; 
+                    }
+                    if(fighting_style == "B"){ 
+                        person.attack_bare_handed(rank); 
+                        return_code = 3;
+                    }
+                    else if(fighting_style == "W"){ 
+                        person.attack_weapon(rank); 
+                        return_code = 4;
+                    }
                 }
-                if(fighting_style == "B"){ person.attack_bare_handed(rank); }
-                else if(fighting_style == "W"){ person.attack_weapon(rank); }
-                return_code = 4;
-
+                
                 std::cout << "Monster slain." << std::endl;
                 if(person.get_health() > 0){ std::cout<< "Your current health is: " << person.get_health() << std::endl; }
                 else{ return_code = 5;}
@@ -278,24 +291,20 @@ int main(){
                 std::cout << "Play a card (0, 1, 2, 3) or run (4): ";
                 std::cin >> choice;
 
-                if(choice > 0 || choice < 5){ break; }
-                else{ std::cout << "Type your answer again." << std::endl; }
+                if((choice > 0 || choice < 5)){ 
+                    if(choice == 4 && has_run){ std::cout << "You cannot run from this room." << std::endl; }
+                    else{ break; }
+                }
+                std::cout << "Type your answer again." << std::endl;
             }
-
-            std::cout << "Out of while loop" << std::endl;
                 
-            if(choice == 5){ //Run
+            if(choice == 4){ //Run
                 has_run = true;
-                std::cout << "in if statement" << std::endl;
                 for(int i = 0; i < 4; i++){
-                    std::cout << "In for loop" << std::endl;
-                    card temp = hand[i];
-                    draw_deck.push_back(temp);
-                    std::cout << "pushed" << std::endl;
+                    draw_deck.push_back(hand[i]);
                     hand[i].reset_card();
                 }
-            }
-            else{ //Picked a card
+            }else{ //Picked a card
                 has_run = false;
                 
                 int choice1 = choice;
@@ -328,13 +337,15 @@ int main(){
                         }
                     }
 
-                    int action = play_card(hand, choice, has_healed); 
+                    int action = play_card(hand, choice, has_healed, weapon_slot_deck.front()); 
     
                     switch(action){
                         case 1: //1 = Used health potion
                             //Add more later here for health potion stats handling
+                            has_healed = true;
                             continue;
                         case 2: //2 = Equipped a new weapon
+                            has_healed = false;
                             if(weapon_slot_deck.empty()){ weapon_slot_deck.push_front(hand[choice]); }
                             else{ 
                                 for(int i = 0; i < weapon_slot_deck.size(); i++){
@@ -344,12 +355,15 @@ int main(){
                             }
                             continue;
                         case 3: //3 = Fought bare handed
+                            has_healed = false;
                             discard_deck.push_front(hand[choice]);
                             continue;
                         case 4: //4 = Fought with weapon
+                            has_healed = false;
                             weapon_slot_deck.push_front(hand[choice]);
                             continue;
                         case 5: //5 = Died
+                            has_healed = false;
                             alive = false;
                             break;
                     }
@@ -375,13 +389,6 @@ int main(){
         }else{
             std::cout << "You died." << std::endl;
         }
-
-        std::string playing_again;
-        std::cout << "Would you like to play again? (y/n): ";
-        std::cin >> playing_again;
-
-        if(playing_again == "y"){ play_again = true; }
-        else{ play_again = false;}
 
         person.reset_player();
     }
