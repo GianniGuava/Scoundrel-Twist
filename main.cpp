@@ -69,7 +69,7 @@ class deck{
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         //Debug a seed
-        //unsigned seed = 2110372386;
+        //unsigned seed = 526130411;
         std::cout << "seed for debug purposes: " << seed << std::endl;
         auto rng = std::default_random_engine(seed);
         //std::cout << rng() % 10 + 1 << std::endl;
@@ -123,15 +123,15 @@ class player{
 
     player(){
         //God mode for devs
-        health = 10000;
-        //health = 20;
+        //health = 10000;
+        health = 20;
         weapon = 0;
     }
 
     void reset_player(){
         //God mode for devs
-        health = 10000;
-        //health = 20;
+        //health = 10000;
+        health = 20;
         weapon = 0;
     }
 
@@ -143,6 +143,7 @@ class player{
 
     void heal(int amount){ 
         health += amount;
+        //comment out below for god mode
         if(health > 20){ health = 20; }
     }
 
