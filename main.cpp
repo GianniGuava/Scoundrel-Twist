@@ -122,12 +122,16 @@ class player{
     public:
 
     player(){
-        health = 20;
+        //God mode for devs
+        health = 10000;
+        //health = 20;
         weapon = 0;
     }
 
     void reset_player(){
-        health = 20;
+        //God mode for devs
+        health = 10000;
+        //health = 20;
         weapon = 0;
     }
 
@@ -196,7 +200,7 @@ int play_card(card (&draw)[4], int index, bool healed, card weapon){
                 else{ return_code = 5;}
                 break;
             }else{
-                if(weapon.get_type() == 3 && 
+                if(weapon.get_type() == 3 && //Perhaps doesn't check properly because I got weapon degraded message on a new sword.
                    weapon.get_rank() <= draw[index].get_rank()){
                     std::cout << "Your weapon is too degraded, you will be forced to fight barehanded" << std::endl;
                     person.attack_bare_handed(rank);
