@@ -68,6 +68,9 @@ class deck{
         create_unshuffled_deck();
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        //Debug a seed
+        //unsigned seed = 2110372386;
+        std::cout << "seed for debug purposes: " << seed << std::endl;
         auto rng = std::default_random_engine(seed);
         //std::cout << rng() % 10 + 1 << std::endl;
         std::shuffle(std::begin(unshuffled_deck), std::end(unshuffled_deck), rng);
