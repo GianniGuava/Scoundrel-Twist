@@ -1,45 +1,76 @@
 #include "card.h"
 
-/*---PRIVATE METHODS---*/
-void card::setSuit(std::string s){
-    auto it = card::suits.find(s); 
-    if(it != card::suits.end()){ card::suit = s; }
-    else{ card::suit = "Empty"; }
-}
-
 /*---PUBLIC METHODS---*/
 card::card(){
-    rank = ranks["0"];
-    suit = "Empty";
+    rank = RANKS::ZERO;
+    suit = SUITS::EMPTY;
 }
 
-card::card(std::string r, std::string s){
-    rank = ranks[r];
-    setSuit(s);
+card::card(int r, int s){
+    rank = r;
+    suit = s;
 }
 
-int card::get_rank(){ 
+std::string card::rankToString(){
     switch(rank){
-    case ranks::ZERO:
-        return 0
-        break;
-    
-    default:
-        break;
+        case RANKS::ZERO:
+            return "0";
+        case RANKS::TWO:
+            return "2";
+        case RANKS::THREE:
+            return "3";
+        case RANKS::FOUR:
+            return "4";
+        case RANKS::FIVE:
+            return "5";
+        case RANKS::SIX:
+            return "6";
+        case RANKS::SEVEN:  
+            return "7";
+        case RANKS::EIGHT:
+            return "8";
+        case RANKS::NINE:
+            return "9";
+        case RANKS::TEN:
+            return "10";
+        case RANKS::JACK:
+            return "Jack";
+        case RANKS::QUEEN:
+            return "Queen";
+        case RANKS::KING:
+            return "King";
+        case RANKS::ACE:
+            return "Ace";
     }
 }
 
-std::string card::get_suit(){ return suit; }
+std::string card::suitToString(){
+    switch(suit){
+        case SUITS::EMPTY:
+            return "Empty";
+        case SUITS::HEARTS:
+            return "Hearts";
+        case SUITS::DIAMONDS:
+            return "Diamonds";
+        case SUITS::SPADES:
+            return "Spades";
+        case SUITS::CLUBS:
+            return "Clubs";
+    }
+}
 
+int card::get_rank(){ return rank; }
+
+int card::get_suit(){ return suit; }
 
 int card::get_type(){
-    if(suit == "H"){ return 1; }
-    else if(suit == "D"){ return 2; }
-    else if(suit == "S" || suit == "C"){ return 3; }
-    else return 0; //Error
+    if(suit == SUITS::HEARTS){ return TYPE::HEALTH; }
+    else if(suit == SUITS::DIAMONDS){ return TYPE::PETS; }
+    else if(suit == SUITS::SPADES || suit == SUITS::CLUBS){ return TYPE::MONSTER; }
+    else return TYPE::ERROR;
 }
 
 void card::reset_card(){
-    rank = 0;
-    suit = "null";
+    rank = RANKS::ZERO;
+    suit = SUITS::EMPTY;
 }

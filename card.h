@@ -4,41 +4,41 @@
 #include "common.h"
 
 class card{
-    std::unordered_set<std::string> suits{
+    enum SUITS{
         /*---DEFAULT SUITS---*/
-        "Empty",
-        "Hearts",
-        "Diamonds",
-        "Spades",
-        "Clubs"
+        EMPTY,
+        HEARTS,
+        DIAMONDS,
+        SPADES,
+        CLUBS
 
         /*---ADDED SUITS---*/
+
     };
 
-    std::unordered_map<std::string, int> ranks = {
+    enum RANKS{
         /*---DEFAULT RANKS---*/
-        {"0", 0},   //Empty
-        {"2", 2},
-        {"3", 3},
-        {"4", 4},
-        {"5", 5},
-        {"6", 6},
-        {"7", 7},
-        {"8", 8},
-        {"9", 9},
-        {"10", 10},
-        {"Jack", 11},
-        {"Queen", 12},
-        {"King", 13},
-        {"Ace", 14}
-
+        ZERO,
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SIX,
+        SEVEN,
+        EIGHT,
+        NINE,
+        TEN,
+        JACK,
+        QUEEN,
+        KING,
+        ACE
         /*---ADDED RANKS---*/
+
     };
 
-
-
-    enum class type{
+    enum TYPE{
         /*---DEFAULT TYPES---*/
+        ERROR,
         HEALTH,
         PETS,
         MONSTER
@@ -49,15 +49,7 @@ class card{
     
     //Class Members
     int rank;
-    std::string suit; 
-
-    /*
-    ################################
-    --------PRIVATE  METHODS--------      
-    ################################
-    */
-
-    void setSuit(std::string s);
+    int suit; 
 
     /*
     ################################
@@ -76,10 +68,22 @@ class card{
     /*
     *   Constructor for deck building
     */
-    card(std::string r, std::string s);
+    card(int r, int s);
 
 
     /*---Class Functions---*/
+
+    /*
+    *   Returns rank as a string
+    *   Must be kept updated with tables
+    */
+    std::string rankToString();
+
+    /*
+    *   Returns suit as a string
+    *   Must be kept updated with tables
+    */
+    std::string suitToString();
     
     /*
     *   Getter for rank 
@@ -89,7 +93,7 @@ class card{
     /*
     *   Getter for suit 
     */
-    std::string get_suit();
+    int get_suit();
 
     /*
     *   Returns "type" converted from rank

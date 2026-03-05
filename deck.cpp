@@ -7,7 +7,7 @@ void create_unshuffled_deck(){
         std::cout << "Unshuffled Deck already made!" << std::endl;
         return;
     }
-    for( : ){
+    for(int suit : card::SUITS){
         for(int rank : ranks){
             card temp(rank, suit);
             unshuffled_deck.push_back(temp);
