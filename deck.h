@@ -3,7 +3,20 @@
 
 #include "card.h"
 
-class deck{
+class deck : protected card{
+
+    template <typename E>
+    constexpr auto to_underlying(E e) noexcept;
+
+    template <typename E>
+    class EnumIterator : private deck {};
+
+    template <typename E>
+    class EnumRange : private deck {};
+
+    template <typename E>
+    EnumRange<E> enum_range(E begin, E end) {};
+
     //Class Members
     std::vector<card> unshuffled_deck; 
     std::deque<card> shuffled_deck;
