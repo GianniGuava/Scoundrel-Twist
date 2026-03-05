@@ -1,14 +1,21 @@
 #include "card.h"
 
-/*---PUBLIC METHODS---*/
-card::card(){
-    rank = ranks::ZERO;
-    suit = suits::EMPTY;
+/*---PRIVATE METHODS---*/
+void card::setSuit(std::string s){
+    auto it = card::suits.find(s); 
+    if(it != card::suits.end()){ card::suit = s; }
+    else{ card::suit = "Empty"; }
 }
 
-card::card(int r, std::string s){
-    rank = r;
-    suit = s;
+/*---PUBLIC METHODS---*/
+card::card(){
+    rank = ranks["0"];
+    suit = "Empty";
+}
+
+card::card(std::string r, std::string s){
+    rank = ranks[r];
+    setSuit(s);
 }
 
 int card::get_rank(){ 

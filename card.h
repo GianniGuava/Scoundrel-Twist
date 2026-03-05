@@ -4,36 +4,38 @@
 #include "common.h"
 
 class card{
-    enum class suits{
+    std::unordered_set<std::string> suits{
         /*---DEFAULT SUITS---*/
-        HEARTS,
-        DIAMONDS,
-        SPADES,
-        CLUBS,
-        EMPTY
+        "Empty",
+        "Hearts",
+        "Diamonds",
+        "Spades",
+        "Clubs"
 
         /*---ADDED SUITS---*/
     };
 
-    enum class ranks{
+    std::unordered_map<std::string, int> ranks = {
         /*---DEFAULT RANKS---*/
-        ZERO,
-        TWO,
-        THREE,
-        FOUR,
-        FIVE,
-        SIX,
-        SEVEN,
-        EIGHT,
-        NINE,
-        TEN,
-        JACK,
-        QUEEN,
-        KING,
-        ACE
+        {"0", 0},   //Empty
+        {"2", 2},
+        {"3", 3},
+        {"4", 4},
+        {"5", 5},
+        {"6", 6},
+        {"7", 7},
+        {"8", 8},
+        {"9", 9},
+        {"10", 10},
+        {"Jack", 11},
+        {"Queen", 12},
+        {"King", 13},
+        {"Ace", 14}
 
-        /*---DEFAULT ADDED---*/
+        /*---ADDED RANKS---*/
     };
+
+
 
     enum class type{
         /*---DEFAULT TYPES---*/
@@ -46,8 +48,16 @@ class card{
     };
     
     //Class Members
-    enum ranks rank;
-    enum suits suit; 
+    int rank;
+    std::string suit; 
+
+    /*
+    ################################
+    --------PRIVATE  METHODS--------      
+    ################################
+    */
+
+    void setSuit(std::string s);
 
     /*
     ################################
@@ -66,7 +76,7 @@ class card{
     /*
     *   Constructor for deck building
     */
-    card(int r, std::string s);
+    card(std::string r, std::string s);
 
 
     /*---Class Functions---*/
