@@ -3,7 +3,7 @@
 
 #include "card.h"
 
-class deck : protected card{
+class deck : public card{
 
     template <typename E>
     constexpr auto to_underlying(E e) noexcept;

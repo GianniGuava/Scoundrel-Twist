@@ -4,24 +4,7 @@
 #include "common.h"
 
 class card{
-    enum TYPE{
-        /*---DEFAULT TYPES---*/
-        ERROR,
-        HEALTH,
-        PETS,
-        MONSTER
-    
-        /*---ADDED TYPES---*/
-
-    };
-    
-    //Class Members
-    int rank;
-    int suit;
-    
-    protected: 
-    
-    enum SUITS{
+    const enum SUITS{
         /*---DEFAULT SUITS---*/
         EMPTY,
         HEARTS,
@@ -33,7 +16,7 @@ class card{
 
     };
 
-    enum RANKS{
+    const enum RANKS{
         /*---DEFAULT RANKS---*/
         ZERO,
         TWO,
@@ -52,6 +35,21 @@ class card{
         /*---ADDED RANKS---*/
 
     };
+
+    enum TYPE{
+        /*---DEFAULT TYPES---*/
+        ERROR,
+        HEALTH,
+        PETS,
+        MONSTER
+    
+        /*---ADDED TYPES---*/
+
+    };
+    
+    //Class Members
+    int rank;
+    int suit;
 
     /*
     ################################
